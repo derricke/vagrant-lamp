@@ -43,8 +43,8 @@ Vagrant.configure("2") do |config|
 
   # Set share folder permissions to 777 so that apache can write files
   config.vm.synced_folder ".", "/vagrant", mount_options: ['dmode=777','fmode=666']
-  #config.vm.synced_folder "./sites-files/", "/var/www", mount_options: ['dmode=777','fmode=666']
-  config.vm.synced_folder "C:/web/www", "/var/www", mount_options: ['dmode=777','fmode=666']
+  config.vm.synced_folder "./sites-files/", "/var/www", mount_options: ['dmode=777','fmode=666']
+  #config.vm.synced_folder "C:/web/www", "/var/www", mount_options: ['dmode=777','fmode=666']
 
   # If you want to share using NFS uncomment this line and comment the ones above
   # (30x faster performance on mac/linux hosts when using VirtualBox)
