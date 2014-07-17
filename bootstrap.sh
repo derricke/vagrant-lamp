@@ -25,7 +25,7 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 
 apt-get install -y mysql-client mysql-server libmysqlclient-dev \
         apache2 apache2-dev curl libcurl4-gnutls-dev libapache2-svn openssl \
-        php5 php5-curl php-pear php5-cli php5-gd php5-common php5-dev php5-ldap php5-sybase php5-mysql \
+        php5 php5-curl php-pear php5-cli php5-gd php5-common php5-dev php5-ldap php5-sybase php5-mysql php5-json php5-mcrypt \
         libapache-dbi-perl libapache2-mod-perl2 libdbd-mysql-perl libauthen-simple-ldap-perl \
         zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev python-software-properties \
         libreadline6-dev zlib1g-dev autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev \
@@ -75,6 +75,15 @@ then
     mv composer.phar /usr/local/bin/composer # Make Composer available globally
 
     touch /var/log/composersetup
+fi
+
+# Install laravel
+if [ ! -f /var/log/laravelsetup ];
+then
+    wget -O /usr/local/bin/laravel http://laravel.com/laravel.phar
+    chmod 755 /usr/local/bin/laravel
+
+    touch /var/log/laravelsetup
 fi
 
 

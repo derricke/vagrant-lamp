@@ -66,6 +66,7 @@ Installed software:
 * MySQL
 * php
 * [Composer](http://getcomposer.org/)
+* Laravel
 * git, subversion
 * Ruby
     * RVM
@@ -102,6 +103,10 @@ Whenever you need to apply new configurations all you need to do is run the prov
 
     $ vagrant provision
 
+
+## Laravel
+
+```laravel new``` command will create a fresh Laravel installation in the directory you specify. For instance, ```laravel new blog``` would create a directory named blog containing a fresh Laravel installation with all dependencies installed. 
 
 
 
