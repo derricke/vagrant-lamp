@@ -14,6 +14,11 @@ MYSQL_PASSWORD='VG1234!@#$'
 
 apt-get update
 
+#install needed modules via apt
+if [ ! -f /var/log/aptsetup ];
+then
+
+
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASSWORD"
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD"
 
@@ -30,6 +35,8 @@ apt-get install -y mysql-client mysql-server libmysqlclient-dev \
         #libapache2-mod-passenger ruby-dev \ #installs wrong version of ruby and passenger
         #ruby-railties # we install rails via gem
 
+    touch /var/log/aptsetup
+fi
 
 # Setup database
 if [ ! -f /var/log/databasesetup ];
@@ -132,13 +139,14 @@ then
     RAILS_ENV=production bundle exec rake db:migrate
     echo 'en' | RAILS_ENV=production bundle exec rake redmine:load_default_data
 
-    touch /var/log/redmine
+    touch /var/log/redminesetup
 
 fi
 
 #copy Vhosts
 cp /vagrant/sites-conf/*.conf /etc/apache2/sites-enabled/
 
+#keeps redmine conf with up to date passenger version
 PVER=$(gem list | awk '/passenger/ { print $2 }' | tr -d '()')
 sed -i "s/\$PVER/$PVER/" /etc/apache2/sites-enabled/redmine.conf
 

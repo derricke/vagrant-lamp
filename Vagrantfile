@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
   
   # Chef (More complicated setups) 
   # Todo list, move more shell scripting to recipies, for now, this is a place holder
-  config.vm.provision :chef_solo do |chef|
+  #config.vm.provision :chef_solo do |chef|
 
     # The librarian gem controls the "cookbook" folder, do not touch it. If you
     # need to create site-specific cookbooks, place them in "site-cookbooks".
@@ -109,6 +109,6 @@ Vagrant.configure("2") do |config|
     #  }
     #})
 
-  end
+  #end
 
 end
