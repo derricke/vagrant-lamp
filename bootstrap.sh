@@ -12,31 +12,36 @@ MYSQL_PASSWORD='VG1234!@#$'
 #chown root: /etc/apt/sources.list.d/passenger.list
 #chmod 600 /etc/apt/sources.list.d/passenger.list
 
-apt-get update
-
 #install needed modules via apt
 if [ ! -f /var/log/aptsetup ];
 then
 
-
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQL_PASSWORD"
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD"
 
+#add brightbox for ruby2.2
+apt-add-repository ppa:brightbox/ruby-ng -y
+apt-get update
+apt-get install -y apache2
+echo "ServerName localhost" | tee /etc/apache2/httpd.conf > /dev/null
+echo "Include httpd.conf" | tee -a /etc/apache2/apache2.conf > /dev/null
 
-apt-get install -y mysql-client mysql-server libmysqlclient-dev \
-        apache2 apache2-dev curl libcurl4-gnutls-dev libapache2-svn openssl \
+apt-get install -y apache2-dev mysql-client mysql-server libmysqlclient-dev \
+        curl libcurl4-gnutls-dev libapache2-svn openssl \
         php5 php5-curl php-pear php5-cli php5-gd php5-common php5-dev php5-ldap php5-sybase php5-mysql php5-json php5-mcrypt \
         libapache-dbi-perl libapache2-mod-perl2 libdbd-mysql-perl libauthen-simple-ldap-perl \
         zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev python-software-properties \
         libreadline6-dev zlib1g-dev autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev \
         ruby-rmagick ruby-mysql imagemagick libmagickwand-dev \
         git git-core subversion \
-        imagemagick libmagickwand-dev 
-        #libapache2-mod-passenger ruby-dev \ #installs wrong version of ruby and passenger
+        imagemagick libmagickwand-dev ruby2.2 ruby2.2-dev
+        #libapache2-mod-passenger  \ #installs wrong version of ruby and passenger
         #ruby-railties # we install rails via gem
 
     touch /var/log/aptsetup
 fi
+
+
 
 # Setup database
 if [ ! -f /var/log/databasesetup ];
@@ -58,7 +63,6 @@ fi
 #Setup Apache
 if [ ! -f /var/log/webserversetup ];
 then
-    echo "ServerName localhost" | tee /etc/apache2/httpd.conf > /dev/null
     a2enmod rewrite cgi headers proxy proxy_http reqtimeout ssl perl dav dav_svn dav_fs rewrite #passenger installed elsewhere
     service apache2 restart
     # sed -i '/AllowOverride None/c AllowOverride All' /etc/apache2/sites-available/default
@@ -80,8 +84,9 @@ fi
 # Install laravel
 if [ ! -f /var/log/laravelsetup ];
 then
-    wget -O /usr/local/bin/laravel http://laravel.com/laravel.phar
-    chmod 755 /usr/local/bin/laravel
+    composer global require "laravel/installer=~1.1"
+    #wget -O /usr/local/bin/laravel http://laravel.com/laravel.phar
+    #chmod 755 /usr/local/bin/laravel
 
     touch /var/log/laravelsetup
 fi
@@ -90,16 +95,16 @@ fi
 # Setup Ruby
 if [ ! -f /var/log/rubysetup ];
 then
-
-    curl -sSL https://get.rvm.io | bash -s stable --ruby=2.1.2 #install with 1 line so no need to run source & install
-    source /usr/local/rvm/scripts/rvm
-    echo "source /usr/local/rvm/scripts/rvm" >> ~/.bashrc
+    #sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+    #curl -sSL https://get.rvm.io | bash -s stable --ruby=2.1.2 #install with 1 line so no need to run source & install
+    #source /usr/local/rvm/scripts/rvm
+    #echo "source /usr/local/rvm/scripts/rvm" >> ~/.bashrc
     #source /home/$USER/.rvm/scripts/rvm # this should be put in /usr/local and not the current user. Might be better used for CentOS
     #rvm install 2.1.2 #already installed above
-    rvm use 2.1.2 --default
+    #rvm use 2.1.2 --default
     echo "gem: --no-ri --no-rdoc" > ~/.gemrc
     
-
+    gem update --system
     gem install rails
     gem install passenger
     passenger-install-apache2-module --auto
